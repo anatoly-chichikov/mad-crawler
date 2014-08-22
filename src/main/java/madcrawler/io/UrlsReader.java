@@ -2,7 +2,6 @@ package madcrawler.io;
 
 import com.google.inject.Inject;
 import madcrawler.settings.CrawlerException;
-import madcrawler.url.UrlChecker;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -12,10 +11,10 @@ import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.format;
+import static madcrawler.url.UrlChecker.hasProtocol;
 
 public class UrlsReader {
 
-    UrlChecker checker;
     FileReader fReader;
 
     public Set<URL> getUrlsFromFile(String source) {
@@ -40,17 +39,12 @@ public class UrlsReader {
 
     private void tryToAddUrl(Set<URL> result, String candidate) {
         try {
-            if (checker.hasProtocol(candidate)) result.add(new URL(candidate));
+            if (hasProtocol(candidate)) result.add(new URL(candidate));
             else result.add(new URL(format("http://%s", candidate)));
         }
         catch (MalformedURLException e) {
             throw new CrawlerException(format("Bad URL found: %s", candidate));
         }
-    }
-
-    @Inject
-    public void setUrlChecker(UrlChecker checker) {
-        this.checker = checker;
     }
 
     @Inject

@@ -1,7 +1,6 @@
 package madcrawler.io;
 
 import com.google.common.collect.Lists;
-import madcrawler.url.UrlChecker;
 import org.junit.Test;
 
 import java.net.URL;
@@ -33,7 +32,6 @@ public class UrlsReaderTest {
 
         UrlsReader testUrlReader = new UrlsReader();
         testUrlReader.setFileReader(mockedFileReader);
-        testUrlReader.setUrlChecker(new UrlChecker());
 
         assertThat(testUrlReader.getUrlsFromFile("/test.txt"), is(expectedSet));
     }
