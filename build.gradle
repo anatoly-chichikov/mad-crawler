@@ -7,6 +7,19 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Mad Crawler',
+                'Implementation-Version': version,
+                'Main-Class': 'madcrawler.App'
+    }
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
 
 dependencies {
     compile 'com.typesafe.akka:akka-actor_2.10:2.3.5'
