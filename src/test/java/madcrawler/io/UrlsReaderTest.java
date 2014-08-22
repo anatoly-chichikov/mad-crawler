@@ -1,15 +1,18 @@
 package madcrawler.io;
 
+import com.google.common.collect.Lists;
 import madcrawler.url.UrlChecker;
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UrlsReaderTest {
 
@@ -20,12 +23,18 @@ public class UrlsReaderTest {
             new URL("http://anothertest.com"),
             new URL("http://test.me"));
 
-        File testSource = new File(this.getClass().
-            getResource("/valid-source.txt").getFile());
+        List<String> mockedFile = Lists.newArrayList(
+            "www.test.com",
+            "http://anothertest.com",
+            "test.me");
 
-        UrlsReader testReader = new UrlsReader();
-        testReader.setChecker(new UrlChecker());
+        FileReader mockedFileReader = mock(FileReader.class);
+        when(mockedFileReader.readUrlsAsLines("/test.txt")).thenReturn(mockedFile);
 
-        assertThat(testReader.getUrlsFromFile(testSource), is(expectedSet));
+        UrlsReader testUrlReader = new UrlsReader();
+        testUrlReader.setFileReader(mockedFileReader);
+        testUrlReader.setUrlChecker(new UrlChecker());
+
+        assertThat(testUrlReader.getUrlsFromFile("/test.txt"), is(expectedSet));
     }
 }

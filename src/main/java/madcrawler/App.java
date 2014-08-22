@@ -7,17 +7,14 @@ import madcrawler.io.UrlsReader;
 import madcrawler.settings.CrawlerException;
 import madcrawler.settings.Injections;
 
-import java.io.File;
-
 import static com.google.common.base.Joiner.on;
-import static java.lang.String.format;
 import static madcrawler.settings.Logger.log;
 
 public class App {
 
     private UrlsReader reader;
 
-    private void start(File source) {
+    private void start(String source) {
         log("Source urls: \n\t%s", on("\n\t").join(reader.getUrlsFromFile(source)));
     }
 
@@ -32,13 +29,10 @@ public class App {
         return injector.getInstance(App.class);
     }
 
-    private static File getFirstArgAsPath(String[] args) {
+    private static String getFirstArgAsPath(String[] args) {
         if (args.length == 0)
             throw new CrawlerException("You should provide a source file as an argument");
-        File source = new File(args[0]);
-        if (!source.isFile())
-            throw new CrawlerException(format("Bad file: %s.", source.getAbsolutePath()));
-        return source;
+        return args[0];
     }
 
     @Inject

@@ -1,12 +1,9 @@
 package madcrawler.io;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import madcrawler.settings.CrawlerException;
 import madcrawler.url.UrlChecker;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,16 +16,16 @@ import static java.lang.String.format;
 public class UrlsReader {
 
     UrlChecker checker;
+    FileReader fReader;
 
-    public Set<URL> getUrlsFromFile(File source) {
+    public Set<URL> getUrlsFromFile(String source) {
         Set<URL> result;
         try {
-            result = tryToConvertLinesToUrls(Files.readLines(source, Charsets.UTF_8));
+            result = tryToConvertLinesToUrls(fReader.readUrlsAsLines(source));
         }
         catch (IOException e) {
             throw new CrawlerException(
-                format("Can't read file: %s",
-                source.getAbsolutePath()));
+                format("Can't read file: %s", source));
         }
         return result;
     }
@@ -52,7 +49,12 @@ public class UrlsReader {
     }
 
     @Inject
-    public void setChecker(UrlChecker checker) {
+    public void setUrlChecker(UrlChecker checker) {
         this.checker = checker;
+    }
+
+    @Inject
+    public void setFileReader(FileReader fReader) {
+        this.fReader = fReader;
     }
 }

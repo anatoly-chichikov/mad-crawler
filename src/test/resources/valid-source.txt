@@ -1,3 +1,0 @@
-www.test.com
-http://anothertest.com
-test.me
