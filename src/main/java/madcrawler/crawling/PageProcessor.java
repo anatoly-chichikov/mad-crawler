@@ -13,7 +13,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 
+import static com.google.common.base.Splitter.on;
 import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.net.UrlEscapers.urlFragmentEscaper;
 import static madcrawler.settings.Logger.log;
 import static madcrawler.url.UrlChecker.*;
 
@@ -44,7 +46,6 @@ public class PageProcessor {
     private Set<URL> handleInternalLinks(Set<URI> uris, URL target) throws Exception {
         Set<URL> result = newHashSet();
         for (URI anchor : uris) {
-            anchor = filterFragmented(anchor);
             if (isAbsoluteInternal(anchor, target) &&
                 isValidProtocol(anchor)) {
                 result.add(anchor.toURL());
@@ -59,19 +60,12 @@ public class PageProcessor {
     private Set<URL> handleExternalLinks(Set<URI> uris, URL target) throws Exception {
         Set<URL> result = newHashSet();
         for (URI anchor : uris) {
-            anchor = filterFragmented(anchor);
             if (isAbsoluteExternal(anchor, target) &&
                 isValidProtocol(anchor)) {
                 result.add(anchor.toURL());
             }
         }
         return result;
-    }
-
-    private URI filterFragmented(URI anchor) throws Exception {
-        if (isContainsFragment(anchor))
-            return new URI(anchor.getScheme(), anchor.getHost(), anchor.getPath(), null);
-        return anchor;
     }
 
     private URL ensureSlashes(URL host, URI path) throws Exception {
@@ -90,13 +84,20 @@ public class PageProcessor {
         Set<URI> uris = newHashSet();
         for (Element anchor : anchors) {
             try {
-                uris.add(new URI(anchor.attr("href")));
+                uris.add(new URI(prepare(anchor.attr("href"))));
             }
             catch (URISyntaxException e) {
-                log("Bad link: %s", anchor.attr("href"));
+                log("Bad link: %s", prepare(anchor.attr("href")));
             }
         }
         return uris;
+    }
+
+    private String prepare(String href) {
+        if (isContainsFragment(href))
+            return urlFragmentEscaper().escape(
+                on('#').split(href).iterator().next());
+        return urlFragmentEscaper().escape(href);
     }
 
     private Elements getAnchors(URL target) throws IOException {

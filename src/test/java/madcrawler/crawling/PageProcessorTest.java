@@ -60,8 +60,8 @@ public class PageProcessorTest {
 
         PageUrls result = processor.process(new URL("http://test.me"));
 
-        assertThat(baseUrl, is(result.getPage()));
-        assertThat(expectedInternalsSet, is(result.getInternalLinks()));
-        assertThat(expectedExternalsSet, is(result.getExternalLinks()));
+        assertThat(result.getPage(), is(baseUrl));
+        assertThat(result.getInternalLinks(), is(expectedInternalsSet));
+        assertThat(result.getExternalLinks(), is(expectedExternalsSet));
     }
 }
