@@ -2,7 +2,6 @@ package madcrawler.crawling;
 
 import com.google.inject.Inject;
 import madcrawler.url.PageUrls;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -100,8 +99,7 @@ public class PageProcessor {
     }
 
     private Elements getAnchors(URL target) throws IOException {
-        Document doc = downloader.fetchPage(target);
-        return doc.select("a");
+        return downloader.fetchPage(target).select("a");
     }
 
     @Inject
