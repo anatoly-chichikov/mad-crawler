@@ -37,11 +37,13 @@ public class UrlCheckerTest {
     @Test
     public void testAbsoluteInternal() throws Exception{
         URL baseUrl = new URL("http://test.me");
+        URI withSubDomain = new URI("http://www.test.me");
         URI valid = new URI("http://test.me/page/");
         URI invalid = new URI("http://another.com/page/");
         URI internal = new URI("internal/page/");
 
         assertTrue(isAbsoluteInternal(valid, baseUrl));
+        assertTrue(isAbsoluteInternal(withSubDomain, baseUrl));
         assertFalse(isAbsoluteInternal(invalid, baseUrl));
         assertFalse(isAbsoluteInternal(internal, baseUrl));
     }

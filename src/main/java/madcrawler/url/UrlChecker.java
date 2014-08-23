@@ -19,12 +19,13 @@ public class UrlChecker {
 
     public static boolean isAbsoluteExternal(URI underTest, URL base) {
         return underTest.isAbsolute() &&
-            !equal(underTest.getHost(), base.getHost());
+            !equal(underTest.getHost(), base.getHost()) &&
+            !underTest.getHost().endsWith(base.getHost());
     }
 
     public static boolean isAbsoluteInternal(URI underTest, URL base) {
         return underTest.isAbsolute() &&
-            equal(underTest.getHost(), base.getHost());
+            underTest.getHost().endsWith(base.getHost());
     }
 
     public static boolean isValidProtocol(URI underTest) {
