@@ -1,6 +1,5 @@
 package madcrawler.crawling;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import madcrawler.url.PageUrls;
 import org.jsoup.nodes.Document;
@@ -14,6 +13,7 @@ import java.net.URL;
 import java.util.Set;
 
 import static com.google.common.base.Splitter.on;
+import static com.google.common.base.Throwables.getStackTraceAsString;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.net.UrlEscapers.urlFragmentEscaper;
 import static madcrawler.settings.Logger.log;
@@ -30,8 +30,7 @@ public class PageProcessor {
                 getUris(getAnchors(target)));
         }
         catch (Exception e) {
-            log("Can't process page: %s", target);
-            log(Throwables.getStackTraceAsString(e));
+            log("Can't process page: %s\n%s", target, getStackTraceAsString(e));
             return null;
         }
     }
@@ -46,8 +45,8 @@ public class PageProcessor {
     private Set<URL> handleInternalLinks(Set<URI> uris, URL target) throws Exception {
         Set<URL> result = newHashSet();
         for (URI anchor : uris) {
-            if (isAbsoluteInternal(anchor, target) &&
-                isValidProtocol(anchor)) {
+            if (isValidProtocol(anchor) &&
+                isAbsoluteInternal(anchor, target)) {
                 result.add(anchor.toURL());
             }
             if (!anchor.isAbsolute()) {
@@ -60,8 +59,8 @@ public class PageProcessor {
     private Set<URL> handleExternalLinks(Set<URI> uris, URL target) throws Exception {
         Set<URL> result = newHashSet();
         for (URI anchor : uris) {
-            if (isAbsoluteExternal(anchor, target) &&
-                isValidProtocol(anchor)) {
+            if (isValidProtocol(anchor) &&
+                isAbsoluteExternal(anchor, target)) {
                 result.add(anchor.toURL());
             }
         }

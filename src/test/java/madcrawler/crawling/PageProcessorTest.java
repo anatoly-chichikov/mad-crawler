@@ -33,7 +33,7 @@ public class PageProcessorTest {
             "    <a href='page#look'></a>" +
             "    <a href='http://google.com'></a>" +
             "    <a href='ftp://test.me'></a>" +
-            "    <a href='ftp://upload.me'></a>" +
+            "    <a href='mailto:email@test.me'></a> " +
             "</div>" +
             "</body>" +
             "</html>";

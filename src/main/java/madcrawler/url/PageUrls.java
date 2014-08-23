@@ -7,14 +7,13 @@ import java.util.Set;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Objects.equal;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.format;
 
 public class PageUrls {
 
     private URL page;
-    private Set<URL> externalLinks = newHashSet();
-    private Set<URL> internalLinks = newHashSet();
+    private Set<URL> externalLinks;
+    private Set<URL> internalLinks;
 
     public PageUrls(URL page, Set<URL> externalLinks, Set<URL> internalLinks) {
         this.page = page;
