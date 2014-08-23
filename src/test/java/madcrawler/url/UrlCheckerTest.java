@@ -71,4 +71,13 @@ public class UrlCheckerTest {
         assertFalse(isContainsFragment(without));
         assertFalse(isContainsFragment(withParams));
     }
+
+    @Test
+    public void testSlashPresence() throws Exception {
+        URI pathWith = new URI("/page/one/");
+        URI pathWithout = new URI("page/one/");
+
+        assertTrue(isWithSlash(pathWith));
+        assertFalse(isWithSlash(pathWithout));
+    }
 }

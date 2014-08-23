@@ -36,4 +36,8 @@ public class UrlChecker {
     public static boolean isContainsFragment(URI underTest) {
         return underTest.getFragment() != null;
     }
+
+    public static boolean isWithSlash(URI path) {
+        return path.getPath().startsWith("/");
+    }
 }
