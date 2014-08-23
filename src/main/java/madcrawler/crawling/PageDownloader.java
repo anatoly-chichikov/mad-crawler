@@ -9,6 +9,6 @@ import java.net.URL;
 public class PageDownloader {
 
     public Document fetchPage(URL url) throws IOException {
-        return Jsoup.parse(url, 1000);
+        return Jsoup.parse(url, 2000);
     }
 }

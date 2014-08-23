@@ -1,0 +1,111 @@
+package madcrawler.crawling;
+
+import com.google.common.base.Throwables;
+import com.google.inject.Inject;
+import madcrawler.url.PageUrls;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Set;
+
+import static com.google.common.collect.Sets.newHashSet;
+import static madcrawler.settings.Logger.log;
+import static madcrawler.url.UrlChecker.*;
+
+public class PageProcessor {
+
+    private PageDownloader downloader;
+
+    public PageUrls process(URL target) {
+        try {
+            return getPageUrls(
+                target,
+                getUris(getAnchors(target)));
+        }
+        catch (Exception e) {
+            log("Can't process page: %s", target);
+            log(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+    }
+
+    private PageUrls getPageUrls(URL target, Set<URI> uris) throws Exception {
+        return new PageUrls(
+            target,
+            handleExternalLinks(uris, target),
+            handleInternalLinks(uris, target));
+    }
+
+    private Set<URL> handleInternalLinks(Set<URI> uris, URL target) throws Exception {
+        Set<URL> result = newHashSet();
+        for (URI anchor : uris) {
+            anchor = filterFragmented(anchor);
+            if (isAbsoluteInternal(anchor, target) &&
+                isValidProtocol(anchor)) {
+                result.add(anchor.toURL());
+            }
+            if (!anchor.isAbsolute()) {
+                result.add(ensureSlashes(target, anchor));
+            }
+        }
+        return result;
+    }
+
+    private Set<URL> handleExternalLinks(Set<URI> uris, URL target) throws Exception {
+        Set<URL> result = newHashSet();
+        for (URI anchor : uris) {
+            anchor = filterFragmented(anchor);
+            if (isAbsoluteExternal(anchor, target) &&
+                isValidProtocol(anchor)) {
+                result.add(anchor.toURL());
+            }
+        }
+        return result;
+    }
+
+    private URI filterFragmented(URI anchor) throws Exception {
+        if (isContainsFragment(anchor))
+            return new URI(anchor.getScheme(), anchor.getHost(), anchor.getPath(), null);
+        return anchor;
+    }
+
+    private URL ensureSlashes(URL host, URI path) throws Exception {
+        if (isWithSlash(path))
+            return new URL(
+                host.getProtocol(),
+                host.getHost(),
+                path.getPath());
+        else return new URL(
+            host.getProtocol(),
+            host.getHost(),
+            "/" + path.getPath());
+    }
+
+    private Set<URI> getUris(Elements anchors) {
+        Set<URI> uris = newHashSet();
+        for (Element anchor : anchors) {
+            try {
+                uris.add(new URI(anchor.attr("href")));
+            }
+            catch (URISyntaxException e) {
+                log("Bad link: %s", anchor.attr("href"));
+            }
+        }
+        return uris;
+    }
+
+    private Elements getAnchors(URL target) throws IOException {
+        Document doc = downloader.fetchPage(target);
+        return doc.select("a");
+    }
+
+    @Inject
+    public void setDownloader(PageDownloader downloader) {
+        this.downloader = downloader;
+    }
+}
