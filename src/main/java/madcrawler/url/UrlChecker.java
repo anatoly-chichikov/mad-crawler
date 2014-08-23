@@ -17,6 +17,10 @@ public class UrlChecker {
         return url.startsWith("http://") || url.startsWith("https://");
     }
 
+    public static boolean isContainsFragment(String underTest) {
+        return underTest.contains("#");
+    }
+
     public static boolean isAbsoluteExternal(URI underTest, URL base) {
         return underTest.isAbsolute() &&
             !equal(underTest.getHost(), base.getHost()) &&
@@ -31,10 +35,6 @@ public class UrlChecker {
     public static boolean isValidProtocol(URI underTest) {
         return equal(underTest.getScheme(), "http") ||
             equal(underTest.getScheme(), "https");
-    }
-
-    public static boolean isContainsFragment(URI underTest) {
-        return underTest.getFragment() != null;
     }
 
     public static boolean isWithSlash(URI path) {

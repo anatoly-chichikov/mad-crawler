@@ -63,9 +63,9 @@ public class UrlCheckerTest {
 
     @Test
     public void testFragmentPresence() throws Exception {
-        URI with = new URI("http://test.me/page#link");
-        URI without = new URI("http://test.me/page");
-        URI withParams = new URI("http://test.me/page?one=1&two=2");
+        String with = "http://test.me/page#link";
+        String without = "http://test.me/page";
+        String withParams = "http://test.me/page?one=1&two=2";
 
         assertTrue(isContainsFragment(with));
         assertFalse(isContainsFragment(without));
