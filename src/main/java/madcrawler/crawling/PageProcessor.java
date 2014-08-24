@@ -19,7 +19,7 @@ import static madcrawler.url.UrlChecker.*;
 
 public class PageProcessor {
 
-    private PageDownloader downloader;
+    @Inject private PageDownloader downloader;
 
     public PageUrls process(URL target) {
         try {
@@ -97,7 +97,6 @@ public class PageProcessor {
         return downloader.fetchPage(target).select("a");
     }
 
-    @Inject
     public void setDownloader(PageDownloader downloader) {
         this.downloader = downloader;
     }

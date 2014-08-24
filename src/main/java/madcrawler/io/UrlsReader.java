@@ -15,7 +15,7 @@ import static madcrawler.url.UrlChecker.hasProtocol;
 
 public class UrlsReader {
 
-    FileReader fReader;
+    @Inject private FileReader fReader;
 
     public Set<URL> getUrlsFromFile(String source) {
         Set<URL> result;
@@ -47,7 +47,6 @@ public class UrlsReader {
         }
     }
 
-    @Inject
     public void setFileReader(FileReader fReader) {
         this.fReader = fReader;
     }
