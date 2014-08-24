@@ -4,26 +4,37 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import madcrawler.crawling.PageProcessor;
+import madcrawler.io.ResultAggregator;
 import madcrawler.io.UrlsReader;
 import madcrawler.settings.CrawlerException;
 import madcrawler.settings.Injections;
+import madcrawler.url.PageUrls;
 
 import java.net.URL;
 import java.util.Set;
 
-import static com.google.common.base.Joiner.on;
 import static madcrawler.settings.Logger.log;
 
 public class App {
 
     private UrlsReader reader;
     private PageProcessor processor;
+    private ResultAggregator aggregator;
 
     private void start(String source) {
         Set<URL> toProcess = reader.getUrlsFromFile(source);
-        log("Source urls: \n\t%s", on("\n\t").join(toProcess));
+        log("Source urls: %s pcs\n", toProcess.size());
+
         for (URL target : toProcess)
-            log(processor.process(target));
+            processUrl(target);
+
+        aggregator.writeResultFile();
+    }
+
+    private void processUrl(URL target) {
+        PageUrls result = processor.process(target);
+        if (result != null) log(result);
+        aggregator.add(result);
     }
 
     public static void main(String[] args) {
@@ -51,5 +62,10 @@ public class App {
     @Inject
     public void setProcessor(PageProcessor processor) {
         this.processor = processor;
+    }
+
+    @Inject
+    public void setAggregator(ResultAggregator aggregator) {
+        this.aggregator = aggregator;
     }
 }
