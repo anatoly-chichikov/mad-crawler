@@ -5,7 +5,6 @@ import com.google.common.base.Objects;
 import java.net.URL;
 import java.util.Set;
 
-import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Objects.equal;
 import static java.lang.String.format;
 
@@ -40,12 +39,12 @@ public class PageUrls {
     @Override
     public String toString() {
         return format(
-            "Parsed URL:\n\t%s\n" +
-            "External links:\n\t%s\n" +
-            "Internal links:\n\t%s\n",
+            "Parsed URL: %s\n" +
+            "External links: %s pcs\n" +
+            "Internal links: %s pcs\n",
             page.toString(),
-            on("\n\t").join(externalLinks),
-            on("\n\t").join(internalLinks));
+            externalLinks.size(),
+            internalLinks.size());
     }
 
     public URL getPage() {
