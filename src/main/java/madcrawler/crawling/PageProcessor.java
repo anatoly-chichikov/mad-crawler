@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.Set;
 
 import static com.google.common.base.Splitter.on;
-import static com.google.common.base.Throwables.getStackTraceAsString;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.net.UrlEscapers.urlFragmentEscaper;
 import static madcrawler.settings.Logger.log;
@@ -29,7 +28,7 @@ public class PageProcessor {
                 getUris(getAnchors(target)));
         }
         catch (Exception e) {
-            log("Can't process page: %s\n%s", target, getStackTraceAsString(e));
+            log("Can't process page: %s. %s.\n", target, e.getMessage());
             return null;
         }
     }
@@ -45,12 +44,10 @@ public class PageProcessor {
         Set<URL> result = newHashSet();
         for (URI anchor : uris) {
             if (isValidProtocol(anchor) &&
-                isAbsoluteInternal(anchor, target)) {
+                isAbsoluteInternal(anchor, target))
                 result.add(anchor.toURL());
-            }
-            if (!anchor.isAbsolute()) {
+            if (!anchor.isAbsolute())
                 result.add(ensureSlashes(target, anchor));
-            }
         }
         return result;
     }
@@ -85,7 +82,7 @@ public class PageProcessor {
                 uris.add(new URI(prepare(anchor.attr("href"))));
             }
             catch (URISyntaxException e) {
-                log("Bad link: %s", prepare(anchor.attr("href")));
+                log("Unprocessed link: %s\n", prepare(anchor.attr("href")));
             }
         }
         return uris;
