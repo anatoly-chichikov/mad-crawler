@@ -23,7 +23,7 @@ public class UrlCheckerTest {
     }
 
     @Test
-    public void testAbsoluteExternal() throws Exception{
+    public void testAbsoluteExternal() throws Exception {
         URL baseUrl = new URL("http://test.me");
         URI valid = new URI("http://another.com/page/");
         URI invalid = new URI("http://test.me/page/");
@@ -35,7 +35,7 @@ public class UrlCheckerTest {
     }
 
     @Test
-    public void testAbsoluteInternal() throws Exception{
+    public void testAbsoluteInternal() throws Exception {
         URL baseUrl = new URL("http://test.me");
         URI withSubDomain = new URI("http://www.test.me");
         URI valid = new URI("http://test.me/page/");
@@ -49,7 +49,7 @@ public class UrlCheckerTest {
     }
 
     @Test
-    public void testValidProtocol() throws Exception{
+    public void testValidProtocol() throws Exception {
         URI http = new URI("http://test.me/page/");
         URI https = new URI("https://another.com/page/");
         URI ftp = new URI("ftp://test.me");

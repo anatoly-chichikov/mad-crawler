@@ -27,8 +27,8 @@ public class PageUrls {
         PageUrls that = (PageUrls) o;
 
         return equal(page, that.page)
-            && equal(externalLinks, that.externalLinks)
-            && equal(internalLinks, that.internalLinks);
+                && equal(externalLinks, that.externalLinks)
+                && equal(internalLinks, that.internalLinks);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class PageUrls {
     @Override
     public String toString() {
         return format(
-            "Parsed URL: %s\n" +
-            "External links: %s pcs\n" +
-            "Internal links: %s pcs\n",
-            page.toString(),
-            externalLinks.size(),
-            internalLinks.size());
+                "Parsed URL: %s\n" +
+                        "External links: %s pcs\n" +
+                        "Internal links: %s pcs\n",
+                page.toString(),
+                externalLinks.size(),
+                internalLinks.size());
     }
 
     public URL getPage() {

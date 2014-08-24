@@ -34,8 +34,8 @@ public class ResultAggregator {
         }
         catch (Exception e) {
             throw new CrawlerException(
-                format("Can't write result file: %s\n%s", e.getMessage(),
-                    Throwables.getStackTraceAsString(e)));
+                    format("Can't write result file: %s\n%s", e.getMessage(),
+                            Throwables.getStackTraceAsString(e)));
         }
     }
 
@@ -52,7 +52,7 @@ public class ResultAggregator {
     private void tryToWrite() throws IOException {
         File result = createNewFile();
         BufferedWriter writer = new BufferedWriter(
-            new FileWriter(result));
+                new FileWriter(result));
 
         writeLinks(writer);
 
@@ -73,7 +73,7 @@ public class ResultAggregator {
 
     private String stampDateAndTime() {
         return new SimpleDateFormat("dd.MM.yyyy-(HH|mm|ss)")
-            .format(new Date());
+                .format(new Date());
     }
 
 }

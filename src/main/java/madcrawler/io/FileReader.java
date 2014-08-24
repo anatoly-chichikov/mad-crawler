@@ -20,7 +20,7 @@ public class FileReader {
         File source = new File(path);
         if (!source.isFile())
             throw new CrawlerException(
-                format("Bad file: %s.", source.getAbsolutePath()));
+                    format("Bad file: %s.", source.getAbsolutePath()));
         return source;
     }
 }

@@ -18,14 +18,14 @@ public class UrlsReaderTest {
     @Test
     public void testGettingUrlsFromFile() throws Exception {
         Set<URL> expectedSet = newHashSet(
-            new URL("http://www.test.com"),
-            new URL("http://anothertest.com"),
-            new URL("http://test.me"));
+                new URL("http://www.test.com"),
+                new URL("http://anothertest.com"),
+                new URL("http://test.me"));
 
         List<String> mockedFile = Lists.newArrayList(
-            "www.test.com",
-            "http://anothertest.com",
-            "test.me");
+                "www.test.com",
+                "http://anothertest.com",
+                "test.me");
 
         FileReader mockedFileReader = mock(FileReader.class);
         when(mockedFileReader.readUrlsAsLines("/test.txt")).thenReturn(mockedFile);

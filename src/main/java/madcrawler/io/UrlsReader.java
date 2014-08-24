@@ -24,7 +24,7 @@ public class UrlsReader {
         }
         catch (IOException e) {
             throw new CrawlerException(
-                format("Can't read file: %s", source));
+                    format("Can't read file: %s", source));
         }
         return result;
     }

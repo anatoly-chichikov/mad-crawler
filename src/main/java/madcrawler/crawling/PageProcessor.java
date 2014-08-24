@@ -24,8 +24,8 @@ public class PageProcessor {
     public PageUrls process(URL target) {
         try {
             return getPageUrls(
-                target,
-                getUris(getAnchors(target)));
+                    target,
+                    getUris(getAnchors(target)));
         }
         catch (Exception e) {
             log("Can't process page: %s. %s.\n", target, e.getMessage());
@@ -35,16 +35,16 @@ public class PageProcessor {
 
     private PageUrls getPageUrls(URL target, Set<URI> uris) throws Exception {
         return new PageUrls(
-            target,
-            handleExternalLinks(uris, target),
-            handleInternalLinks(uris, target));
+                target,
+                handleExternalLinks(uris, target),
+                handleInternalLinks(uris, target));
     }
 
     private Set<URL> handleInternalLinks(Set<URI> uris, URL target) throws Exception {
         Set<URL> result = newHashSet();
         for (URI anchor : uris) {
             if (isValidProtocol(anchor) &&
-                isAbsoluteInternal(anchor, target))
+                    isAbsoluteInternal(anchor, target))
                 result.add(anchor.toURL());
             if (!anchor.isAbsolute())
                 result.add(ensureSlashes(target, anchor));
@@ -54,25 +54,23 @@ public class PageProcessor {
 
     private Set<URL> handleExternalLinks(Set<URI> uris, URL target) throws Exception {
         Set<URL> result = newHashSet();
-        for (URI anchor : uris) {
+        for (URI anchor : uris)
             if (isValidProtocol(anchor) &&
-                isAbsoluteExternal(anchor, target)) {
+                    isAbsoluteExternal(anchor, target))
                 result.add(anchor.toURL());
-            }
-        }
         return result;
     }
 
     private URL ensureSlashes(URL host, URI path) throws Exception {
         if (isWithSlash(path))
             return new URL(
+                    host.getProtocol(),
+                    host.getHost(),
+                    path.getPath());
+        else return new URL(
                 host.getProtocol(),
                 host.getHost(),
-                path.getPath());
-        else return new URL(
-            host.getProtocol(),
-            host.getHost(),
-            "/" + path.getPath());
+                "/" + path.getPath());
     }
 
     private Set<URI> getUris(Elements anchors) {
@@ -91,7 +89,7 @@ public class PageProcessor {
     private String prepare(String href) {
         if (isContainsFragment(href))
             return urlFragmentEscaper().escape(
-                on('#').split(href).iterator().next());
+                    on('#').split(href).iterator().next());
         return urlFragmentEscaper().escape(href);
     }
 
