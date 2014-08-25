@@ -55,8 +55,9 @@ public class ResultAggregator {
                 new FileWriter(result));
 
         writeLinks(writer);
-
         writer.close();
+
+        log("Writing %s urls...", links.size());
         log("Result file %s has been written\n", result.getName());
     }
 
@@ -72,8 +73,8 @@ public class ResultAggregator {
     }
 
     private String stampDateAndTime() {
-        return new SimpleDateFormat("dd.MM.yyyy-(HH|mm|ss)")
-                .format(new Date());
+        return new SimpleDateFormat("dd.MM.yyyy-(HH|mm|ss)").
+                format(new Date());
     }
 
 }

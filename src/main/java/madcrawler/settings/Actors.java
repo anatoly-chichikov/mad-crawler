@@ -11,6 +11,10 @@ import static madcrawler.settings.Logger.log;
 
 public class Actors {
 
+    private Actors() {
+        throw new CrawlerException("You should not instantiate this class");
+    }
+
     private static ActorSystem system = ActorSystem.
             create("MadCrawler");
 
