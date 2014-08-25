@@ -13,14 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Sets.newTreeSet;
 import static com.google.common.io.Files.touch;
 import static java.lang.String.format;
 import static madcrawler.settings.Logger.log;
 
 public class ResultAggregator {
 
-    private Set<String> links = newHashSet();
+    private Set<String> links = newTreeSet();
 
     public void add(PageUrls urls) {
         if (urls != null) {

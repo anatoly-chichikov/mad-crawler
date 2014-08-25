@@ -2,9 +2,9 @@ package madcrawler.messages;
 
 public class Start {
 
-    private String path;
+    private final String path;
 
-    public Start(String path) {
+    public Start(final String path) {
         this.path = path;
     }
 
