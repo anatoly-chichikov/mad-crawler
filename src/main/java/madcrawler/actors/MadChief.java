@@ -3,26 +3,27 @@ package madcrawler.actors;
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import com.google.inject.Inject;
-import madcrawler.crawling.PageProcessor;
 import madcrawler.io.UrlsReader;
-import madcrawler.messages.Aggregate;
-import madcrawler.messages.Finish;
+import madcrawler.messages.Crawl;
+import madcrawler.messages.Expected;
 import madcrawler.messages.Start;
-import madcrawler.url.PageUrls;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
-import static madcrawler.settings.Actors.getAggregator;
+import static com.google.common.collect.Lists.newArrayList;
+import static madcrawler.settings.Actors.*;
 import static madcrawler.settings.ExecutionTime.markStartPoint;
 import static madcrawler.settings.Logger.log;
 
 public class MadChief extends UntypedActor {
 
-    @Inject private UrlsReader reader;
-    @Inject private PageProcessor processor;
-    private ActorRef aggregator = getAggregator();
+    private final ActorRef aggregator = getAggregator();
+    private final ActorRef inspector = getInspector();
+    private final List<ActorRef> crawlers = newArrayList();
 
+    @Inject private UrlsReader reader;
 
     @Override
     public void onReceive(Object message) throws Exception {
@@ -35,17 +36,35 @@ public class MadChief extends UntypedActor {
                 getUrlsFromFile(message.getPath());
 
         markStartPoint();
-        log("Source urls: %s pcs\n", toProcess.size());
+        log("Source urls quantity: %s pcs\n", toProcess.size());
 
-        for (URL target : toProcess)
-            processUrl(target);
-
-        aggregator.tell(new Finish(), ActorRef.noSender());
+        tellExpectedUrlsCount(toProcess.size());
+        initCrawlers(toProcess.size());
+        chargeCrawlers(toProcess);
     }
 
-    private void processUrl(URL target) {
-        PageUrls result = processor.process(target);
-        if (result != null) log(result);
-        aggregator.tell(new Aggregate(result), ActorRef.noSender());
+    private void tellExpectedUrlsCount(int size) {
+        inspector.tell(new Expected(size, aggregator), ActorRef.noSender());
+    }
+
+    private void initCrawlers(int urlsCount) {
+        int maxActorsCount = 100;
+        int crawlersCount = urlsCount < maxActorsCount ? urlsCount : maxActorsCount;
+        for (int i = 0; i < crawlersCount; i++)
+            crawlers.add(getCrawler());
+    }
+
+    private void chargeCrawlers(Set<URL> targets) {
+        int actorsCount = 0;
+        for (URL target : targets) {
+            if (crawlers.size() == actorsCount) actorsCount = 0;
+            tellCrawlerToStart(crawlers.get(actorsCount), target);
+            actorsCount++;
+        }
+    }
+
+    private void tellCrawlerToStart(ActorRef crawler, URL target) {
+        crawler.tell(new Crawl(target, aggregator, inspector),
+                ActorRef.noSender());
     }
 }

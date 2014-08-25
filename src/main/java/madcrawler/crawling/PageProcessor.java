@@ -28,7 +28,7 @@ public class PageProcessor {
                     getUris(getAnchors(target)));
         }
         catch (Exception e) {
-            log("Can't process page: %s. %s.\n", target, e.getMessage());
+            log("Can't process page: %s\nCause: %s\n", target, e.getMessage());
             return null;
         }
     }

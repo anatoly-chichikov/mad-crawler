@@ -5,6 +5,8 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import madcrawler.actors.MadAggregator;
 import madcrawler.actors.MadChief;
+import madcrawler.actors.MadCrawler;
+import madcrawler.actors.MadInspector;
 
 import static madcrawler.App.getInjector;
 
@@ -19,6 +21,14 @@ public class Actors {
 
     public static ActorRef getChief() {
         return getActor(MadChief.class);
+    }
+
+    public static ActorRef getCrawler() {
+        return getActor(MadCrawler.class);
+    }
+
+    public static ActorRef getInspector() {
+        return getActor(MadInspector.class);
     }
 
     public static ActorRef getAggregator() {
