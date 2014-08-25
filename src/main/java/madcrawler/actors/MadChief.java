@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Set;
 
 import static madcrawler.settings.Actors.getAggregator;
+import static madcrawler.settings.ExecutionTime.markStartPoint;
 import static madcrawler.settings.Logger.log;
 
 public class MadChief extends UntypedActor {
@@ -30,10 +31,10 @@ public class MadChief extends UntypedActor {
     }
 
     private void start(Start message) {
-        log("Mad Crawler app has been started");
-
         Set<URL> toProcess = reader.
                 getUrlsFromFile(message.getPath());
+
+        markStartPoint();
         log("Source urls: %s pcs\n", toProcess.size());
 
         for (URL target : toProcess)

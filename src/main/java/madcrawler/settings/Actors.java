@@ -7,7 +7,6 @@ import madcrawler.actors.MadAggregator;
 import madcrawler.actors.MadChief;
 
 import static madcrawler.App.getInjector;
-import static madcrawler.settings.Logger.log;
 
 public class Actors {
 
@@ -27,7 +26,6 @@ public class Actors {
     }
 
     public static void shutdownApp() {
-        log("Mad Crawler app has been finished");
         system.shutdown();
     }
 

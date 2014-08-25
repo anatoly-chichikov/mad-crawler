@@ -7,6 +7,7 @@ import madcrawler.messages.Aggregate;
 import madcrawler.messages.Finish;
 
 import static madcrawler.settings.Actors.shutdownApp;
+import static madcrawler.settings.ExecutionTime.markEndPoint;
 
 public class MadAggregator extends UntypedActor {
 
@@ -27,6 +28,7 @@ public class MadAggregator extends UntypedActor {
 
     private void finish() {
         aggregator.writeResultFile();
+        markEndPoint();
         shutdownApp();
     }
 }
