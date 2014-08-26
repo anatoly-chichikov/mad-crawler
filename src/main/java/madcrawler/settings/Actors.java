@@ -20,30 +20,38 @@ public class Actors {
             create("MadCrawler");
 
     public static ActorRef getChief() {
-        return getActor(MadChief.class);
-    }
-
-    public static ActorRef getCrawler() {
-        return getActor(MadCrawler.class);
+        return fromGenericPool(MadChief.class);
     }
 
     public static ActorRef getInspector() {
-        return getActor(MadInspector.class);
+        return fromGenericPool(MadInspector.class);
     }
 
     public static ActorRef getAggregator() {
-        return getActor(MadAggregator.class);
+        return fromGenericPool(MadAggregator.class);
+    }
+
+    public static ActorRef getCrawler() {
+        return fromExtendedPool(MadCrawler.class);
     }
 
     public static void shutdownApp() {
         system.shutdown();
     }
 
-    private static ActorRef getActor(Class type) {
+    private static ActorRef fromGenericPool(Class type) {
         return system.actorOf(
                 Props.create(
                         ActorsInjector.class,
                         getInjector(),
-                        type));
+                        type).withDispatcher("core-dispatcher"));
+    }
+
+    private static ActorRef fromExtendedPool(Class type) {
+        return system.actorOf(
+                Props.create(
+                        ActorsInjector.class,
+                        getInjector(),
+                        type).withDispatcher("crawler-dispatcher"));
     }
 }
