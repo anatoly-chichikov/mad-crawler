@@ -6,6 +6,8 @@ import madcrawler.messages.Expected;
 import madcrawler.messages.Finish;
 import madcrawler.messages.SubmitCrawl;
 
+import static madcrawler.settings.ExecutionTime.markEndOfCrawling;
+
 public class MadInspector extends UntypedActor {
 
     private int expectedJobs = -1;
@@ -28,6 +30,7 @@ public class MadInspector extends UntypedActor {
     }
 
     private void tellToFinishApp() {
+        markEndOfCrawling();
         aggregator.tell(new Finish(), ActorRef.noSender());
     }
 }

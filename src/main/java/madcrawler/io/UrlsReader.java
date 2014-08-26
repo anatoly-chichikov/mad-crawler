@@ -18,15 +18,13 @@ public class UrlsReader {
     @Inject private FileReader fReader;
 
     public Set<URL> getUrlsFromFile(String source) {
-        Set<URL> result;
         try {
-            result = tryToConvertLinesToUrls(fReader.readUrlsAsLines(source));
+            return tryToConvertLinesToUrls(fReader.readUrlsAsLines(source));
         }
         catch (IOException e) {
             throw new CrawlerException(
                     format("Can't read file: %s", source));
         }
-        return result;
     }
 
     private Set<URL> tryToConvertLinesToUrls(List<String> strings) {

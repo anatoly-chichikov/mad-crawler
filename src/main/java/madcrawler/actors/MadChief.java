@@ -1,6 +1,7 @@
 package madcrawler.actors;
 
 import akka.actor.ActorRef;
+import akka.actor.PoisonPill;
 import akka.actor.UntypedActor;
 import com.google.inject.Inject;
 import madcrawler.io.UrlsReader;
@@ -32,6 +33,7 @@ public class MadChief extends UntypedActor {
     }
 
     private void start(Start message) {
+        log("Loading source URLs from file: %s ...", message.getPath());
         Set<URL> toProcess = reader.
                 getUrlsFromFile(message.getPath());
 
@@ -41,6 +43,7 @@ public class MadChief extends UntypedActor {
         tellExpectedUrlsCount(toProcess.size());
         initCrawlers(toProcess.size());
         chargeCrawlers(toProcess);
+        chargeCrawlersWithPoisonPills();
     }
 
     private void tellExpectedUrlsCount(int size) {
@@ -61,6 +64,11 @@ public class MadChief extends UntypedActor {
             tellCrawlerToStart(crawlers.get(actorsCount), target);
             actorsCount++;
         }
+    }
+
+    private void chargeCrawlersWithPoisonPills() {
+        for (ActorRef crawler : crawlers)
+            crawler.tell(PoisonPill.getInstance(), ActorRef.noSender());
     }
 
     private void tellCrawlerToStart(ActorRef crawler, URL target) {

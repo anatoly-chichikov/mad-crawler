@@ -8,7 +8,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
@@ -40,13 +39,8 @@ public class ResultAggregator {
     }
 
     private void saveNonEmptyResult(PageUrls urls) {
-        links.add(urls.getPage().toString());
-
-        for (URL link : urls.getExternalLinks())
-            links.add(link.toString());
-
-        for (URL link : urls.getInternalLinks())
-            links.add(link.toString());
+        for (String url : urls.getLinks())
+            links.add(url);
     }
 
     private void tryToWrite() throws IOException {

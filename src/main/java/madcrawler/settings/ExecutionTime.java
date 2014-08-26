@@ -17,6 +17,10 @@ public class ExecutionTime {
         log("Mad Crawler app has been started");
     }
 
+    public static void markEndOfCrawling() {
+        log("Crawling complete in %s\n", stopwatch);
+    }
+
     public static void markEndPoint() {
         log("Total execution time is: %s", stopwatch);
         log("Mad Crawler app has been finished");

@@ -11,13 +11,11 @@ import static java.lang.String.format;
 public class PageUrls {
 
     private URL page;
-    private Set<URL> externalLinks;
-    private Set<URL> internalLinks;
+    private Set<String> links;
 
-    public PageUrls(URL page, Set<URL> externalLinks, Set<URL> internalLinks) {
+    public PageUrls(URL page, Set<String> links) {
         this.page = page;
-        this.externalLinks = externalLinks;
-        this.internalLinks = internalLinks;
+        this.links = links;
     }
 
     @Override
@@ -26,36 +24,29 @@ public class PageUrls {
         if (!(o instanceof PageUrls)) return false;
         PageUrls that = (PageUrls) o;
 
-        return equal(page, that.page)
-                && equal(externalLinks, that.externalLinks)
-                && equal(internalLinks, that.internalLinks);
+        return equal(page, that.page);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(externalLinks, internalLinks);
+        return Objects.hashCode(page);
     }
 
     @Override
     public String toString() {
         return format(
-                "Parsed URL: %s\n" +
-                        "External links: %s pcs\n" +
-                        "Internal links: %s pcs\n",
+                "Parsed URL: %s found links: %s pcs\n",
                 page.toString(),
-                externalLinks.size(),
-                internalLinks.size());
+                links.size());
     }
 
     public URL getPage() {
         return page;
     }
 
-    public Set<URL> getExternalLinks() {
-        return externalLinks;
+    public Set<String> getLinks() {
+        return links;
     }
 
-    public Set<URL> getInternalLinks() {
-        return internalLinks;
-    }
+
 }

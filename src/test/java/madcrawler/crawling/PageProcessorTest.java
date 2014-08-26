@@ -17,22 +17,12 @@ public class PageProcessorTest {
 
     @Test
     public void testPageProcessing() throws Exception {
-        String mockedPage = "<!DOCTYPE html>" +
-                "<html>" +
-                "<head lang='en'>" +
-                "    <meta charset='UTF-8'>" +
-                "    <title></title>" +
-                "</head>" +
-                "<body>" +
+        String mockedPage = "<body>" +
                 "<div>" +
                 "    <a href='http://test.me'></a>" +
-                "    <a href='http://www.test.me/withprefix'></a>" +
                 "    <a href='http://test.me/tests'></a>" +
                 "    <a href='/tests/about'></a>" +
-                "    <a href='page'></a>" +
                 "    <a href='page#look'></a>" +
-                "    <a href='http://google.com'></a>" +
-                "    <a href='ftp://test.me'></a>" +
                 "    <a href='mailto:email@test.me'></a> " +
                 "</div>" +
                 "</body>" +
@@ -44,16 +34,12 @@ public class PageProcessorTest {
         when(mockedDownloader.fetchPage(baseUrl)).
                 thenReturn(Jsoup.parse(mockedPage));
 
-        Set<URL> expectedInternalsSet = newHashSet(
-                new URL("http://test.me"),
-                new URL("http://www.test.me/withprefix"),
-                new URL("http://test.me/tests"),
-                new URL("http://test.me/tests/about"),
-                new URL("http://test.me/page")
-        );
-        Set<URL> expectedExternalsSet = newHashSet(
-                new URL("http://google.com")
-        );
+        Set<String> expected = newHashSet(
+               "http://test.me",
+               "http://test.me/tests",
+               "/tests/about",
+               "page#look",
+               "mailto:email@test.me");
 
         PageProcessor processor = new PageProcessor();
         processor.setDownloader(mockedDownloader);
@@ -61,7 +47,6 @@ public class PageProcessorTest {
         PageUrls result = processor.process(new URL("http://test.me"));
 
         assertThat(result.getPage(), is(baseUrl));
-        assertThat(result.getInternalLinks(), is(expectedInternalsSet));
-        assertThat(result.getExternalLinks(), is(expectedExternalsSet));
+        assertThat(result.getLinks(), is(expected));
     }
 }
