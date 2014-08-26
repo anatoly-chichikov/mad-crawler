@@ -47,6 +47,4 @@ public class PageUrls {
     public Set<String> getLinks() {
         return links;
     }
-
-
 }

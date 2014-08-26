@@ -2,9 +2,6 @@ package madcrawler.url;
 
 import org.junit.Test;
 
-import java.net.URI;
-import java.net.URL;
-
 import static madcrawler.url.UrlChecker.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -12,70 +9,53 @@ import static org.junit.Assert.assertTrue;
 public class UrlCheckerTest {
 
     @Test
-    public void testHasProtocol() {
-        String urlHttp = "http://test.me";
-        String urlHttps = "https://test.me";
-        String urlWithoutProtocol = "test.me";
+    public void testNotUrl() {
+        String jsCall = "javascript:console.log('test')";
+        String mail = "mailto:test@test.me";
+        String backPath = "../../dummy/path";
+        String normal = "http://test.me";
 
-        assertTrue(hasProtocol(urlHttp));
-        assertTrue(hasProtocol(urlHttps));
-        assertFalse(hasProtocol(urlWithoutProtocol));
+        assertFalse(isNotToPage(normal));
+        assertTrue(isNotToPage(mail));
+        assertTrue(isNotToPage(jsCall));
+        assertTrue(isNotToPage(backPath));
     }
 
     @Test
-    public void testAbsoluteExternal() throws Exception {
-        URL baseUrl = new URL("http://test.me");
-        URI valid = new URI("http://another.com/page/");
-        URI invalid = new URI("http://test.me/page/");
-        URI internal = new URI("internal/page/");
+    public void testProtocolPresence() {
+        String with = "http://test.me";
+        String without = "page/";
 
-        assertTrue(isAbsoluteExternal(valid, baseUrl));
-        assertFalse(isAbsoluteExternal(invalid, baseUrl));
-        assertFalse(isAbsoluteExternal(internal, baseUrl));
+        assertTrue(hasProtocol(with));
+        assertFalse(hasProtocol(without));
     }
 
     @Test
-    public void testAbsoluteInternal() throws Exception {
-        URL baseUrl = new URL("http://test.me");
-        URI withSubDomain = new URI("http://www.test.me");
-        URI valid = new URI("http://test.me/page/");
-        URI invalid = new URI("http://another.com/page/");
-        URI internal = new URI("internal/page/");
+    public void testAbsValidProtocol() {
+        String http = "http://test.me/page/";
+        String https = "https://another.com/page/";
+        String ftp = "ftp://test.me";
+        String sftp = "sftp://test.me";
 
-        assertTrue(isAbsoluteInternal(valid, baseUrl));
-        assertTrue(isAbsoluteInternal(withSubDomain, baseUrl));
-        assertFalse(isAbsoluteInternal(invalid, baseUrl));
-        assertFalse(isAbsoluteInternal(internal, baseUrl));
+        assertTrue(isAbsValidProtocol(http));
+        assertTrue(isAbsValidProtocol(https));
+        assertFalse(isAbsValidProtocol(ftp));
+        assertFalse(isAbsValidProtocol(sftp));
     }
 
     @Test
-    public void testValidProtocol() throws Exception {
-        URI http = new URI("http://test.me/page/");
-        URI https = new URI("https://another.com/page/");
-        URI ftp = new URI("ftp://test.me");
-        URI sftp = new URI("sftp://test.me");
-
-        assertTrue(isValidProtocol(http));
-        assertTrue(isValidProtocol(https));
-        assertFalse(isValidProtocol(ftp));
-        assertFalse(isValidProtocol(sftp));
-    }
-
-    @Test
-    public void testFragmentPresence() throws Exception {
+    public void testFragmentPresence() {
         String with = "http://test.me/page#link";
         String without = "http://test.me/page";
-        String withParams = "http://test.me/page?one=1&two=2";
 
         assertTrue(isContainsFragment(with));
         assertFalse(isContainsFragment(without));
-        assertFalse(isContainsFragment(withParams));
     }
 
     @Test
-    public void testSlashPresence() throws Exception {
-        URI pathWith = new URI("/page/one/");
-        URI pathWithout = new URI("page/one/");
+    public void testSlashPresence() {
+        String pathWith = "/page/one/";
+        String pathWithout = "page/one/";
 
         assertTrue(isWithSlash(pathWith));
         assertFalse(isWithSlash(pathWithout));

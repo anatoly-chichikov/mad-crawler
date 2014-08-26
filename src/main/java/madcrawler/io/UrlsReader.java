@@ -29,9 +29,8 @@ public class UrlsReader {
 
     private Set<URL> tryToConvertLinesToUrls(List<String> strings) {
         Set<URL> result = newHashSet();
-        for (String candidate : strings) {
+        for (String candidate : strings)
             tryToAddUrl(result, candidate);
-        }
         return result;
     }
 

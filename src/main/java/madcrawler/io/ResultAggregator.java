@@ -1,8 +1,10 @@
 package madcrawler.io;
 
 import com.google.common.base.Throwables;
+import com.google.inject.Inject;
 import madcrawler.settings.CrawlerException;
 import madcrawler.url.PageUrls;
+import madcrawler.url.UrlFixer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +21,7 @@ import static madcrawler.settings.Logger.log;
 
 public class ResultAggregator {
 
+    @Inject private UrlFixer fixer;
     private Set<String> links = newTreeSet();
 
     public void add(PageUrls urls) {
@@ -39,8 +42,11 @@ public class ResultAggregator {
     }
 
     private void saveNonEmptyResult(PageUrls urls) {
-        for (String url : urls.getLinks())
-            links.add(url);
+        for (String url : urls.getLinks()) {
+            String fixed = fixer.fixAsString(urls.getPage(), url);
+            if (fixed != null)
+                links.add(fixed);
+        }
     }
 
     private void tryToWrite() throws IOException {
