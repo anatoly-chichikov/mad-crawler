@@ -68,10 +68,12 @@ public class UrlCheckerTest {
     public void testInternal() throws MalformedURLException {
         URL base = new URL("http://test.me");
 
+        String likeBase = "http://test.me";
         String internal = "http://test.me/one/";
         String withSubDomain = "http://www.test.me/one/";
         String external = "http://www.not-test.me/one/";
 
+        assertTrue(isInternal(base, likeBase));
         assertTrue(isInternal(base, internal));
         assertTrue(isInternal(base, withSubDomain));
         assertFalse(isInternal(base, external));

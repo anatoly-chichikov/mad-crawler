@@ -7,17 +7,45 @@ import static madcrawler.url.UrlChecker.*;
 
 public class UrlFixer {
 
-    public String fixAsString(URL base, String toFix) {
+    public String fixForStoring(URL base, String toFix) {
         String candidate = toFix.trim();
 
-        if (hasProtocol(toFix))
-            if (isAbsValidProtocol(candidate)) return esc(candidate);
-            else return null;
-
+        if (isAbsoluteValid(candidate)) return esc(candidate);
+        if (isWithSlash(candidate)) return withSlashRelative(base, candidate);
+        if (hasProtocol(candidate)) return null;
         if (isNotToPage(candidate)) return null;
-        if (isWithSlash(candidate)) return esc(base.toString() + candidate);
+        return withoutSlashRelative(base, candidate);
+    }
 
-        return esc(base.toString() + '/' + candidate);
+    public String fixForCrawling(URL base, String toFix) {
+        String candidate = toFix.trim();
+
+        if (isAbsoluteValidInternal(base, candidate)) return esc(candidate);
+        if (isWithSlash(candidate)) return withSlashRelative(base, candidate);
+        if (isInternal(base, candidate)) return null;
+        if (hasProtocol(candidate)) return null;
+        if (isNotToPage(candidate)) return null;
+        return withoutSlashRelative(base, candidate);
+    }
+
+    private boolean isAbsoluteValid(String candidate) {
+        return hasProtocol(candidate) && isAbsValidProtocol(candidate);
+    }
+
+    private boolean isAbsoluteValidInternal(URL base, String candidate) {
+        return hasProtocol(candidate) &&
+                isAbsValidProtocol(candidate) &&
+                isInternal(base, candidate);
+    }
+
+    private String withSlashRelative(URL base, String candidate) {
+        return esc(base.getProtocol() + "://" +
+                base.getHost() + candidate);
+    }
+
+    private String withoutSlashRelative(URL base, String candidate) {
+        return esc(base.getProtocol() + "://" +
+                base.getHost() + "/" + candidate);
     }
 
     private String esc(String toEsc) {

@@ -34,6 +34,6 @@ public class UrlChecker {
     }
 
     public static boolean isInternal(URL base, String underTest) {
-        return underTest.matches("(http|https)://(.*\\.|)" + base.getHost() + "/.*");
+        return underTest.matches("(http|https)://(.*\\.|)" + base.getHost() + "(/.*|)");
     }
 }

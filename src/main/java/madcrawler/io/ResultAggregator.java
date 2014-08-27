@@ -25,9 +25,8 @@ public class ResultAggregator {
     private Set<String> links = newTreeSet();
 
     public void add(PageUrls urls) {
-        if (urls != null) {
+        if (urls != null)
             saveNonEmptyResult(urls);
-        }
     }
 
     public void writeResultFile() {
@@ -43,7 +42,7 @@ public class ResultAggregator {
 
     private void saveNonEmptyResult(PageUrls urls) {
         for (String url : urls.getLinks()) {
-            String fixed = fixer.fixAsString(urls.getPage(), url);
+            String fixed = fixer.fixForStoring(urls.getPage(), url);
             if (fixed != null)
                 links.add(fixed);
         }
