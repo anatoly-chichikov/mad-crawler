@@ -21,9 +21,11 @@ public class RecursiveProcessorTest {
         URL base = new URL("http://test.me");
         RecursiveProcessor testedProcessor = new RecursiveProcessor(base);
         PageProcessor mockedPageProcessor = mock(PageProcessor.class);
+        TimeController mockedTimeController = mock(TimeController.class);
 
         testedProcessor.setFixer(new UrlFixer());
         testedProcessor.setProcessor(mockedPageProcessor);
+        testedProcessor.setTimeController(mockedTimeController);
         when(mockedPageProcessor.process(base)).thenReturn(
                 new PageUrls(base,
                         newHashSet(

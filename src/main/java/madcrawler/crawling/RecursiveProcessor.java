@@ -19,6 +19,7 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
 
     @Inject private PageProcessor processor;
     @Inject private UrlFixer fixer;
+    @Inject private TimeController time;
     private int alreadyProcessed;
     private boolean isUsed;
 
@@ -66,12 +67,15 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
         isUsed = true;
         uniqueProcessed.add(base.toString());
         PageUrls result = processor.process(base);
+        time.mark();
         handleResult(result);
     }
 
     private void processNext() throws MalformedURLException {
         if (!toProcess.isEmpty()) {
+            time.sleep();
             PageUrls result = processor.process(new URL(toProcess.poll()));
+            time.mark();
             handleResult(result);
         }
     }
@@ -85,7 +89,7 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
 
     private void tryToAddForProcessing(Set<String> urls) {
         for (String url : urls)
-            if (alreadyProcessed < 100) tryToAddFixed(url);
+            if (alreadyProcessed < 99) tryToAddFixed(url);
     }
 
     private void tryToAddFixed(String url) {
@@ -103,5 +107,9 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
 
     public void setFixer(UrlFixer fixer) {
         this.fixer = fixer;
+    }
+
+    public void setTimeController(TimeController time) {
+        this.time = time;
     }
 }

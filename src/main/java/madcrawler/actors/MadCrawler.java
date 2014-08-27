@@ -35,9 +35,6 @@ public class MadCrawler extends UntypedActor {
     }
 
     private void tellToAggregateSuccessful(Crawl message, PageUrls result) {
-        log("%s URLs found on %s\n",
-                result.getLinks().size(),
-                result.getPage());
         message.getAggregator().
                 tell(new Aggregate(result), ActorRef.noSender());
     }
