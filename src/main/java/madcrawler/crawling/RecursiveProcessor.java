@@ -20,27 +20,30 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
     @Inject private PageProcessor processor;
     @Inject private UrlFixer fixer;
     @Inject private TimeController time;
+    @Inject private BrokenProcessingCounter counter;
+
     private int alreadyProcessed;
     private boolean isUsed;
+    private boolean isDisabled;
 
     private URL base;
     private Queue<PageUrls> results = newLinkedList();
-    private Queue<String> toProcess = newLinkedList();
+    private Queue<String> targets = newLinkedList();
     private Set<String> uniqueProcessed = newHashSet();
 
-    public RecursiveProcessor(URL base) {
+    public void charge(URL base) {
         this.base = base;
     }
 
     @Override
     public boolean hasNext() {
-        return !isUsed || !toProcess.isEmpty();
+        return (!isUsed || !targets.isEmpty()) && !isDisabled;
     }
 
     @Override
     public PageUrls next() {
         try {
-            tryToProcessNextUrl();
+            tryToProcessPage();
         }
         catch (MalformedURLException e) {
             log("Error during getting next link: ", e.getMessage());
@@ -58,7 +61,8 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
         return this;
     }
 
-    private void tryToProcessNextUrl() throws MalformedURLException {
+    private void tryToProcessPage() throws MalformedURLException {
+        ensureCharging();
         if (!isUsed) processFirst();
         else processNext();
     }
@@ -72,9 +76,9 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
     }
 
     private void processNext() throws MalformedURLException {
-        if (!toProcess.isEmpty()) {
+        if (!targets.isEmpty()) {
             time.sleep();
-            PageUrls result = processor.process(new URL(toProcess.poll()));
+            PageUrls result = processor.process(new URL(targets.poll()));
             time.mark();
             handleResult(result);
         }
@@ -82,23 +86,39 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
 
     private void handleResult(PageUrls result) {
         if (result != null) {
-            tryToAddForProcessing(result.getLinks());
+            counter.reportGood();
+            addForFutureProcessing(result.getLinks());
             results.add(result);
+        } else {
+            counter.reportBad();
+            checkCrawlingHealth();
         }
     }
 
-    private void tryToAddForProcessing(Set<String> urls) {
-        for (String url : urls)
-            if (alreadyProcessed < 99) tryToAddFixed(url);
+    private void addForFutureProcessing(Set<String> urls) {
+        if (alreadyProcessed < 99)
+            for (String url : urls)
+                if (alreadyProcessed < 99)
+                    addPreparedLink(url);
     }
 
-    private void tryToAddFixed(String url) {
+    private void addPreparedLink(String url) {
         String candidate = fixer.fixForCrawling(base, url);
         if (candidate != null && !uniqueProcessed.contains(candidate)) {
-            toProcess.add(candidate);
+            targets.add(candidate);
             uniqueProcessed.add(candidate);
             alreadyProcessed++;
         }
+    }
+
+    private void checkCrawlingHealth() {
+        isDisabled = counter.isBroken();
+        if (isDisabled)
+            log("Too many broken links for %s\nCrawling has been stopped", base);
+    }
+
+    private void ensureCharging() {
+        if (base == null) throw new CrawlerException("Uncharged recursive processor");
     }
 
     public void setProcessor(PageProcessor processor) {
@@ -111,5 +131,9 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
 
     public void setTimeController(TimeController time) {
         this.time = time;
+    }
+
+    public void setCounter(BrokenProcessingCounter counter) {
+        this.counter = counter;
     }
 }

@@ -19,13 +19,14 @@ public class RecursiveProcessorTest {
     @Test
     public void testGeneralBehavior() throws MalformedURLException {
         URL base = new URL("http://test.me");
-        RecursiveProcessor testedProcessor = new RecursiveProcessor(base);
+        RecursiveProcessor testedProcessor = new RecursiveProcessor();
         PageProcessor mockedPageProcessor = mock(PageProcessor.class);
         TimeController mockedTimeController = mock(TimeController.class);
 
         testedProcessor.setFixer(new UrlFixer());
         testedProcessor.setProcessor(mockedPageProcessor);
         testedProcessor.setTimeController(mockedTimeController);
+        testedProcessor.setCounter(new BrokenProcessingCounter());
         when(mockedPageProcessor.process(base)).thenReturn(
                 new PageUrls(base,
                         newHashSet(
@@ -34,6 +35,8 @@ public class RecursiveProcessorTest {
                                 "http://google.ru")));
 
         Set<PageUrls> resultSet = newHashSet();
+
+        testedProcessor.charge(base);
         for (PageUrls processed : testedProcessor)
             if (processed != null)
                 resultSet.add(processed);
@@ -45,6 +48,5 @@ public class RecursiveProcessorTest {
                                 "http://test.me/one",
                                 "/another-one",
                                 "http://google.ru"))));
-
     }
 }
