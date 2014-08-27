@@ -2,6 +2,8 @@ package madcrawler.url;
 
 import madcrawler.settings.CrawlerException;
 
+import java.net.URL;
+
 public class UrlChecker {
 
     private UrlChecker() {
@@ -27,7 +29,11 @@ public class UrlChecker {
                 underTest.startsWith("../");
     }
 
-    public static boolean isWithSlash(String path) {
-        return path.startsWith("/");
+    public static boolean isWithSlash(String underTest) {
+        return underTest.startsWith("/");
+    }
+
+    public static boolean isInternal(URL base, String underTest) {
+        return underTest.matches("(http|https)://(.*\\.|)" + base.getHost() + "/.*");
     }
 }
