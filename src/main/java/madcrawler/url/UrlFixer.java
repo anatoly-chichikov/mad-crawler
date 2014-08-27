@@ -11,9 +11,9 @@ public class UrlFixer {
         String candidate = toFix.trim();
 
         if (isAbsoluteValid(candidate)) return esc(candidate);
+        if (isNotToPage(candidate)) return null;
         if (isWithSlash(candidate)) return withSlashRelative(base, candidate);
         if (hasProtocol(candidate)) return null;
-        if (isNotToPage(candidate)) return null;
         return withoutSlashRelative(base, candidate);
     }
 
@@ -21,10 +21,10 @@ public class UrlFixer {
         String candidate = toFix.trim();
 
         if (isAbsoluteValidInternal(base, candidate)) return esc(candidate);
+        if (isNotToPage(candidate)) return null;
         if (isWithSlash(candidate)) return withSlashRelative(base, candidate);
         if (isInternal(base, candidate)) return null;
         if (hasProtocol(candidate)) return null;
-        if (isNotToPage(candidate)) return null;
         return withoutSlashRelative(base, candidate);
     }
 

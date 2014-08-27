@@ -32,6 +32,8 @@ public class PageProcessor {
         Set<String> result = newHashSet();
         for (Element anchor : getAnchors(target))
             result.add(anchor.attr("href"));
+
+        log("%s URLs found on %s\n", result.size(), target);
         return result;
     }
 

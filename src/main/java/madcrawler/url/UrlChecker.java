@@ -26,7 +26,8 @@ public class UrlChecker {
     public static boolean isNotToPage(String underTest) {
         return underTest.startsWith("javascript:") ||
                 underTest.startsWith("mailto:") ||
-                underTest.startsWith("../");
+                underTest.startsWith("../") ||
+                underTest.startsWith("//");
     }
 
     public static boolean isWithSlash(String underTest) {
