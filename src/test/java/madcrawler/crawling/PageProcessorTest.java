@@ -35,11 +35,11 @@ public class PageProcessorTest {
                 thenReturn(Jsoup.parse(mockedPage));
 
         Set<String> expected = newHashSet(
-               "http://test.me",
-               "http://test.me/tests",
-               "/tests/about",
-               "page#look",
-               "mailto:email@test.me");
+                "http://test.me",
+                "http://test.me/tests",
+                "/tests/about",
+                "page#look",
+                "mailto:email@test.me");
 
         PageProcessor processor = new PageProcessor();
         processor.setDownloader(mockedDownloader);

@@ -96,9 +96,10 @@ public class RecursiveProcessor implements Iterator<PageUrls>, Iterable<PageUrls
     }
 
     private void addForFutureProcessing(Set<String> urls) {
-        if (alreadyProcessed < 99)
+        int crawlingDepth = 100;
+        if (alreadyProcessed < crawlingDepth - 1)
             for (String url : urls)
-                if (alreadyProcessed < 99)
+                if (alreadyProcessed < crawlingDepth - 1)
                     addPreparedLink(url);
     }
 

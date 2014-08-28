@@ -10,6 +10,6 @@ public class PageDownloader {
 
     public Document fetchPage(URL url) throws IOException {
         return Jsoup.connect(url.toString())
-                .timeout(1000).followRedirects(true).get();
+                .timeout(900).followRedirects(true).get();
     }
 }

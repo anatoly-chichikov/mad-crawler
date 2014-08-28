@@ -2,15 +2,12 @@ package madcrawler.actors;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
-import com.google.common.base.Stopwatch;
 import com.google.inject.Inject;
 import madcrawler.crawling.RecursiveProcessor;
 import madcrawler.messages.Aggregate;
 import madcrawler.messages.Crawl;
 import madcrawler.messages.SubmitCrawl;
 import madcrawler.url.PageUrls;
-
-import static madcrawler.settings.Logger.log;
 
 public class MadCrawler extends UntypedActor {
 
@@ -23,25 +20,23 @@ public class MadCrawler extends UntypedActor {
     }
 
     private void crawlPage(Crawl message) {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        crawlRecursively(message);
+        tellAboutEnd(message);
+    }
 
+    private void crawlRecursively(Crawl message) {
         processor.charge(message.getPage());
-
-        for (PageUrls urls : processor) {
-            log("%s processed during %s\n", message.getPage(), stopwatch);
-            if (urls != null) {
-               tellToAggregateSuccessful(message, urls);
-            }
-            stopwatch.reset();
-            stopwatch.start();
-        }
-
-        message.getInspector().
-                tell(new SubmitCrawl(), ActorRef.noSender());
+        for (PageUrls urls : processor)
+            if (urls != null) tellToAggregateSuccessful(message, urls);
     }
 
     private void tellToAggregateSuccessful(Crawl message, PageUrls result) {
         message.getAggregator().
                 tell(new Aggregate(result), ActorRef.noSender());
+    }
+
+    private void tellAboutEnd(Crawl message) {
+        message.getInspector().
+                tell(new SubmitCrawl(), ActorRef.noSender());
     }
 }
