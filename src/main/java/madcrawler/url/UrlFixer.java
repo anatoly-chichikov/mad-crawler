@@ -10,6 +10,7 @@ public class UrlFixer {
     public String fixForStoring(URL base, String toFix) {
         String candidate = toFix.trim();
 
+        if (isWihoutBody(toFix)) return null;
         if (isAbsoluteValid(candidate)) return esc(candidate);
         if (isNotToPage(candidate)) return null;
         if (isWithSlash(candidate)) return withSlashRelative(base, candidate);
@@ -20,6 +21,7 @@ public class UrlFixer {
     public String fixForCrawling(URL base, String toFix) {
         String candidate = toFix.trim();
 
+        if (isContainsFragment(candidate)) return null;
         if (isAbsoluteValidInternal(base, candidate)) return esc(candidate);
         if (isNotToPage(candidate)) return null;
         if (isWithSlash(candidate)) return withSlashRelative(base, candidate);

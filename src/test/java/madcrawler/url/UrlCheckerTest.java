@@ -78,4 +78,13 @@ public class UrlCheckerTest {
         assertTrue(isInternal(base, withSubDomain));
         assertFalse(isInternal(base, external));
     }
+
+    @Test
+    public void testWithoutBody() {
+        String withBody = "http://test.me";
+        String withoutBody = "http://";
+
+        assertFalse(isWihoutBody(withBody));
+        assertTrue(isWihoutBody(withoutBody));
+    }
 }

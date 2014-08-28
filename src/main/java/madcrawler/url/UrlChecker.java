@@ -30,11 +30,15 @@ public class UrlChecker {
                 underTest.startsWith("//");
     }
 
+    public static boolean isWihoutBody(String underTest) {
+        return underTest.matches("^(http|https)://");
+    }
+
     public static boolean isWithSlash(String underTest) {
         return underTest.startsWith("/");
     }
 
     public static boolean isInternal(URL base, String underTest) {
-        return underTest.matches("(http|https)://(.*\\.|)" + base.getHost() + "(/.*|)");
+        return underTest.matches("^(http|https)://(.*\\.|)" + base.getHost() + "(/.*|)");
     }
 }
