@@ -7,14 +7,14 @@ Each target site processes recursively with a one hundred links depth and one se
 Result links save uniquely to the output `result-[date&time].txt` file. This file will be saved inside a running application folder.
 
 ### Build
-Project building requires JDK 7+ and the internet connection.
+Project building requires JDK 7+ and an internet connection.
 Here is the bash command which tests and builds Mad Crawler:
 ```
 sh gradlew clean build
 ```
 You can find result jar file here:
 ```
-project-root/build/libs/Mad-Cravler-x.x.jar
+project-root/build/libs/Mad-Crawler-x.x.jar
 ```
 All necessary dependencies are included in it.
 
